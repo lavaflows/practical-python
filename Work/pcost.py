@@ -11,13 +11,14 @@ def portfolio_cost(filename: str) -> float:
         headers = next(rows)
         
         total_paid = 0
-        for row in rows:
+        for line,row in enumerate(rows,start=1):
+            record = dict(zip(headers,row))
             try:                
-                nshares = int(row[1])
-                price = float(row[2])
+                nshares = int(record['shares'])
+                price = float(record['price'])
                 total_paid += nshares * price
             except ValueError as error:
-                print(f"Couldn't parse: {row}")            
+                print(f"Row {line}: Couldn't convert:{row}")            
         
     return total_paid
 
