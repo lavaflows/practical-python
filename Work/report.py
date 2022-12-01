@@ -108,6 +108,8 @@ if __name__ == '__main__':
         portfolio_filename = 'Data/portfolio.csv'
         prices_filename = 'Data/prices.csv'
     
-    portfolio_report(portfolio_filename, prices_filename)
+    files = ['Data/portfolio.csv', 'Data/portfolio2.csv']
+    for file in files:
+        portfolio_report(file, prices_filename='Data/prices.csv')
 
    

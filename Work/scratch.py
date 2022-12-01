@@ -21,7 +21,6 @@ def read_stocks(filename:str)->None:
         return record
 
 
-
 if __name__ == '__main__':
     argv = sys.argv
     if len(argv) > 2:
