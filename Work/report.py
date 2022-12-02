@@ -6,44 +6,44 @@ import csv
 import sys
 import pdb
 from pprint import pprint 
+import fileparse
 
 def read_portfolio(filename: str) -> list:
     'Reads a portfolio file and returns total amount paid as a float.'
-    with open(filename, 'rt') as file:
-        rows = csv.reader(file)
+    # with open(filename, 'rt') as file:
+    #     rows = csv.reader(file)
 
-        headers = next(rows)     
+    #     headers = next(rows)     
 
-        portfolio = []
-        for line_no,row in enumerate(rows,start=1):
-            record = dict(zip(headers,row))
-            try:
-                stock = {
-                        'name': record['name'],
-                        'shares': int(record['shares']),
-                        'price': float(record['price'])
-                        }
-            except ValueError as err:
-                print(f'Row {line_no}: Failed with {err}')
-                print(f'Row {line_no}: Unable to process: {row}')
+    #     portfolio = []
+    #     for line_no,row in enumerate(rows,start=1):
+    #         record = dict(zip(headers,row))
+    #         try:
+    #             stock = {
+    #                     'name': record['name'],
+    #                     'shares': int(record['shares']),
+    #                     'price': float(record['price'])
+    #                     }
+    #         except ValueError as err:
+    #             print(f'Row {line_no}: Failed with {err}')
+    #             print(f'Row {line_no}: Unable to process: {row}')
                         
-            portfolio.append(stock)          
+    #         portfolio.append(stock)          
         
-    return portfolio
+    return fileparse.parse_csv(filename, select=['name','shares','price'], types=[str,int,float])
 
 def read_prices(filename: str) -> dict:
     'Read prices and returns a dictionary'
-    
-    prices = {}
-    with open(filename, 'r') as file:
-        data = csv.reader(file)
-        for row in data:
-            if row:
-                prices[row[0]] = float(row[1])
-            else:
-                continue
+    # prices = {}
+    # with open(filename, 'r') as file:
+    #     data = csv.reader(file)
+    #     for row in data:
+    #         if row:
+    #             prices[row[0]] = float(row[1])
+    #         else:
+    #             continue
 
-    return prices
+    return fileparse.parse_csv(filename,types=[str,float], has_headers=False)
         
 
 def gain_loss(prices:dict, portfolio:dict) -> None:
@@ -93,6 +93,7 @@ def portfolio_report(portfolio_filename: str, prices_filename:str)-> None:
 
     portfolio = read_portfolio(portfolio_filename)
     prices = read_prices(prices_filename)
+    pdb.set_trace()
     report = make_report(portfolio,prices)
 
     print_report(report)
