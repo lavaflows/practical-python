@@ -1,6 +1,7 @@
 # fileparse.py
 import csv
 import pdb
+from pprint import pprint
 
 def parse_csv(filename:str, select:list=None,types:list=None, has_headers:bool=True, delimiter=',',silence_errors:bool=False):
     '''
@@ -36,9 +37,10 @@ def parse_csv(filename:str, select:list=None,types:list=None, has_headers:bool=T
                 record = dict(zip(headers,row))
             else:
                 record = tuple(row)
-
             records.append(record)
+
     return records
 
 if __name__ == '__main__':
-    shares_held = parse_csv('Data/prices.csv', types=[str,int,float],silence_errors=True, has_headers=True)
+    shares_held = parse_csv('Data/portfolio.csv', types=[str,int,float],silence_errors=True, has_headers=True)
+    pprint(shares_held)

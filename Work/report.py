@@ -5,8 +5,9 @@
 import csv
 import sys
 import pdb
-from pprint import pprint 
 import fileparse
+from pprint import pprint 
+
 
 def read_portfolio(filename: str) -> list:
     'Reads a portfolio file and returns total amount paid as a float.'
@@ -43,7 +44,7 @@ def read_prices(filename: str) -> dict:
     #         else:
     #             continue
 
-    return fileparse.parse_csv(filename,types=[str,float], has_headers=False)
+    return dict(fileparse.parse_csv(filename,types=[str,float], has_headers=False))
         
 
 def gain_loss(prices:dict, portfolio:dict) -> None:
@@ -93,24 +94,25 @@ def portfolio_report(portfolio_filename: str, prices_filename:str)-> None:
 
     portfolio = read_portfolio(portfolio_filename)
     prices = read_prices(prices_filename)
-    pdb.set_trace()
     report = make_report(portfolio,prices)
 
     print_report(report)
     gain_loss(prices,portfolio)
-        
 
-if __name__ == '__main__':
+def main(argv):
 
     if len(sys.argv) == 3:
-        portfolio_filename = sys.argv[1]
-        prices_filename = sys.argv[2]
+        portfolio_filename = argv[1]
+        prices_filename = argv[2]
     else:
         portfolio_filename = 'Data/portfolio.csv'
         prices_filename = 'Data/prices.csv'
     
-    files = ['Data/portfolio.csv', 'Data/portfolio2.csv']
-    for file in files:
-        portfolio_report(file, prices_filename='Data/prices.csv')
+    portfolio_report(portfolio_filename, prices_filename)
+
+        
+
+if __name__ == '__main__':    
+    main(sys.argv)
 
    
