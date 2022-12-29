@@ -7,54 +7,32 @@ import sys
 import pdb
 import fileparse
 from pprint import pprint 
+from stock import Stock
 
 
 def read_portfolio(filename: str) -> list:
     'Reads a portfolio file and returns total amount paid as a float.'
-    # with open(filename, 'rt') as file:
-    #     rows = csv.reader(file)
+    with open(filename, 'rt') as lines:
+        portfolio = fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float])
+    return [Stock(s['name'], s['shares'], s['price']) for s in portfolio]
 
-    #     headers = next(rows)     
-
-    #     portfolio = []
-    #     for line_no,row in enumerate(rows,start=1):
-    #         record = dict(zip(headers,row))
-    #         try:
-    #             stock = {
-    #                     'name': record['name'],
-    #                     'shares': int(record['shares']),
-    #                     'price': float(record['price'])
-    #                     }
-    #         except ValueError as err:
-    #             print(f'Row {line_no}: Failed with {err}')
-    #             print(f'Row {line_no}: Unable to process: {row}')
-                        
-    #         portfolio.append(stock)          
         
-    return fileparse.parse_csv(filename, select=['name','shares','price'], types=[str,int,float])
+    
 
 def read_prices(filename: str) -> dict:
     'Read prices and returns a dictionary'
-    # prices = {}
-    # with open(filename, 'r') as file:
-    #     data = csv.reader(file)
-    #     for row in data:
-    #         if row:
-    #             prices[row[0]] = float(row[1])
-    #         else:
-    #             continue
-
-    return dict(fileparse.parse_csv(filename,types=[str,float], has_headers=False))
+    with open(filename, 'rt') as lines:
+        return dict(fileparse.parse_csv(lines,types=[str,float], has_headers=False))
         
 
-def gain_loss(prices:dict, portfolio:dict) -> None:
+def gain_loss(prices:dict, portfolio:list) -> None:
     'Compute portfolio assets and gains/loss'
     
     total_asset = 0.0
     curr_price = 0.0
 
-    total_asset = sum([holding['shares']*holding['price'] for holding in portfolio])
-    current_price = sum([prices[holding['name']] * holding['shares'] for holding in portfolio])
+    total_asset = sum([holding.shares*holding.price for holding in portfolio])
+    current_price = sum([prices[holding.name] * holding.shares for holding in portfolio])
 
     
     profit = current_price - total_asset
@@ -69,9 +47,9 @@ def make_report(portfolio:list, prices:dict) -> list:
 
     report = []
     for holding in portfolio:
-        current_price = prices.get(holding['name'])
-        purchase_price = holding['price']
-        record = (holding['name'], holding['shares'], current_price, current_price-purchase_price)
+        current_price = prices.get(holding.name)
+        purchase_price = holding.price
+        record = (holding.name, holding.shares, current_price, current_price-purchase_price)
         report.append(record)
     
     return report
