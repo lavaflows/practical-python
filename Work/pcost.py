@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 # pcost.py
-#
 # Exercise 1.27
 import sys
 import report
+import pdb
 
 def portfolio_cost(filename: str) -> float:
     'Reads a portfolio file and returns total amount paid as a float.'
@@ -27,7 +28,7 @@ def main(argv):
     if len(sys.argv) == 2:
         filename = sys.argv[1]
     else:
-        filename = 'Data/missing.csv'
+        filename = 'Data/portfolio.csv'
 
     cost = portfolio_cost(filename)
     print(f'Total paid: {cost}')
