@@ -9,7 +9,7 @@ import pdb
 import fileparse
 from pprint import pprint 
 from stock import Stock
-
+import tableformat
 
 def read_portfolio(filename: str) -> list:
     'Reads a portfolio file and returns total amount paid as a float.'
@@ -55,17 +55,12 @@ def make_report(portfolio:list, prices:dict) -> list:
     
     return report
 
-def print_report(report: list) -> None:
-    'Prints a report'
-    print('\n')
-    headers = ('Name', 'Shares', 'Price', 'Change')
-    print('%10s %10s %10s %10s' % headers)
-    print(('-' * 10 + ' ') * len(headers))
-
-    for name, shares, price, change in report:
-        print(f'{name:>10s} {shares:>10d} ${price:>10.2f} {change:>10.2f}')
-
-    print('\n')
+def print_report(reportdata: list, formatter) -> None:
+    '''Prints a report'''
+    formatter.headings(['Name','Shares','Price','Change'])
+    for name, shares, price, change in reportdata:
+        rowdata = [ name, str(shares), f'{price:0.2f}', f'{change:0.2f}' ]
+        formatter.row(rowdata)
 
 
 def portfolio_report(portfolio_filename: str, prices_filename:str)-> None:
@@ -75,7 +70,8 @@ def portfolio_report(portfolio_filename: str, prices_filename:str)-> None:
     prices = read_prices(prices_filename)
     report = make_report(portfolio,prices)
 
-    print_report(report)
+    formatter = tableformat.CSVTableFormatter()
+    print_report(report,formatter)
     gain_loss(prices,portfolio)
 
 def main(argv):
