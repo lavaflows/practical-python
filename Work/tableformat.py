@@ -14,7 +14,7 @@ class TableFormatter:
         raise NotImplementedError()
 
 # tableformat.py
-...
+
 class TextTableFormatter(TableFormatter):
     '''
     Emit a table in plain-text format
@@ -30,7 +30,7 @@ class TextTableFormatter(TableFormatter):
             print(f'{d:>10s}', end=' ')
         print()
 # tableformat.py
-...
+
 class CSVTableFormatter(TableFormatter):
     '''
     Output portfolio data in CSV format.
@@ -40,3 +40,25 @@ class CSVTableFormatter(TableFormatter):
 
     def row(self, rowdata):
         print(','.join(rowdata))
+
+class HTMLTableFormatter(TableFormatter):
+    '''
+    Output portfolio data in HTML format
+    '''
+    def headings(self, headers):
+        to_print = ''
+        for index,h in enumerate(headers,1):
+            if index == 1:
+                to_print += '<tr><th>'+ h + '</th>'
+            else:
+                to_print +=  '<th>' + h + '</th>'
+        print(to_print+'</tr>')
+    def row(self, rowdata):
+        to_print = ''
+        for index,h in enumerate(rowdata,1):
+            if index == 1:
+                to_print += '<tr><td>'+ h + '</td>'
+            else:
+                to_print +=  '<td>' + h + '</td>'
+        print(to_print+'</tr>')
+        

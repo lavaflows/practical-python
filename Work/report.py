@@ -37,6 +37,8 @@ def gain_loss(prices:dict, portfolio:list) -> None:
 
     
     profit = current_price - total_asset
+    
+    print()
     print(f'Total Assets  : {total_asset:<10.2f}')
     print(f'Current Value : {current_price:<10.2f}')
     print(f'Gains/Loss    : {profit:<10.2f}\n')
@@ -63,27 +65,40 @@ def print_report(reportdata: list, formatter) -> None:
         formatter.row(rowdata)
 
 
-def portfolio_report(portfolio_filename: str, prices_filename:str)-> None:
+def portfolio_report(portfolio_filename: str, prices_filename:str, format:str)-> None:
     'Create and print portfolio'
 
     portfolio = read_portfolio(portfolio_filename)
     prices = read_prices(prices_filename)
     report = make_report(portfolio,prices)
 
-    formatter = tableformat.CSVTableFormatter()
+    
+    match format:
+        case 'csv':
+            formatter = tableformat.CSVTableFormatter()
+        case 'html':
+            formatter = tableformat.HTMLTableFormatter()
+        case 'txt':
+            formatter = tableformat.TextTableFormatter()
+        case _:
+            formatter = tableformat.TextTableFormatter()
+
+    
     print_report(report,formatter)
     gain_loss(prices,portfolio)
 
 def main(argv):
 
-    if len(sys.argv) == 3:
+    if len(sys.argv) == 4:
         portfolio_filename = argv[1]
         prices_filename = argv[2]
+        format = argv[3]
     else:
         portfolio_filename = 'Data/portfolio.csv'
         prices_filename = 'Data/prices.csv'
+        format = 'txt'
     
-    portfolio_report(portfolio_filename, prices_filename)
+    portfolio_report(portfolio_filename, prices_filename, format)
 
         
 
