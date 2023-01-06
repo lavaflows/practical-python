@@ -61,4 +61,24 @@ class HTMLTableFormatter(TableFormatter):
             else:
                 to_print +=  '<td>' + h + '</td>'
         print(to_print+'</tr>')
-        
+
+def create_formatter(format):
+    match format:
+        case 'csv':
+            formatter = CSVTableFormatter()
+        case 'html':
+            formatter = HTMLTableFormatter()
+        case 'txt':
+            formatter = TextTableFormatter()
+        case _:
+            formatter = TextTableFormatter()
+    return formatter
+
+def print_table(portfolio:list, fields:list, formatter):
+
+    formatter.headings(fields)
+    for stock in portfolio:
+        rowdata = []
+        for field in fields:
+            rowdata.append(str(getattr(stock,field)))   
+        formatter.row(rowdata)

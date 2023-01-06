@@ -37,7 +37,7 @@ def gain_loss(prices:dict, portfolio:list) -> None:
 
     
     profit = current_price - total_asset
-    
+
     print()
     print(f'Total Assets  : {total_asset:<10.2f}')
     print(f'Current Value : {current_price:<10.2f}')
@@ -71,21 +71,21 @@ def portfolio_report(portfolio_filename: str, prices_filename:str, format:str)->
     portfolio = read_portfolio(portfolio_filename)
     prices = read_prices(prices_filename)
     report = make_report(portfolio,prices)
-
     
-    match format:
-        case 'csv':
-            formatter = tableformat.CSVTableFormatter()
-        case 'html':
-            formatter = tableformat.HTMLTableFormatter()
-        case 'txt':
-            formatter = tableformat.TextTableFormatter()
-        case _:
-            formatter = tableformat.TextTableFormatter()
-
-    
+    formatter = tableformat.create_formatter(format)
+   
     print_report(report,formatter)
     gain_loss(prices,portfolio)
+
+def print_table(portfolio:list, fields:list, formatter):
+
+    formatter.headings([fields])
+    for stock in portfolio:
+        rowdata = []
+        for field in fields:
+            rowdata.append(getattr(stock,field))
+        
+        formatter.row(rowdata)
 
 def main(argv):
 
