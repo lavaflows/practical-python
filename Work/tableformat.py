@@ -1,5 +1,6 @@
 # tableformat.py
-
+class FormatError(Exception):
+    pass
 class TableFormatter:
     def headings(self, headers):
         '''
@@ -63,6 +64,9 @@ class HTMLTableFormatter(TableFormatter):
         print(to_print+'</tr>')
 
 def create_formatter(format):
+    if format is None:
+        format = 'txt'
+        
     match format:
         case 'csv':
             formatter = CSVTableFormatter()
@@ -71,7 +75,7 @@ def create_formatter(format):
         case 'txt':
             formatter = TextTableFormatter()
         case _:
-            formatter = TextTableFormatter()
+            raise FormatError(f'Unknown table format {format}')
     return formatter
 
 def print_table(portfolio:list, fields:list, formatter):
