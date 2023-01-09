@@ -9,13 +9,17 @@ import pdb
 import fileparse
 from pprint import pprint 
 from stock import Stock
+from portfolio import Portfolio
 import tableformat
+
 
 def read_portfolio(filename: str) -> list:
     'Reads a portfolio file and returns total amount paid as a float.'
     with open(filename, 'rt') as lines:
-        portfolio = fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float])
-    return [Stock(s['name'], s['shares'], s['price']) for s in portfolio]
+        portdicts = fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float])
+    
+    portfolio = [Stock(s['name'], s['shares'], s['price']) for s in portdicts]
+    return Portfolio(portfolio)
 
         
     

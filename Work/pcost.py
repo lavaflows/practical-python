@@ -22,7 +22,7 @@ def portfolio_cost(filename: str) -> float:
     #             print(f"Row {line}: Couldn't convert:{row}")            
     portfolio = report.read_portfolio(filename=filename)
 
-    return sum([stock.cost for stock in portfolio])
+    return portfolio.total_cost
 
 def main(argv):
     if len(sys.argv) == 2:
