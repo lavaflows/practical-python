@@ -1,15 +1,19 @@
 #ticker.py
 
 from follow import follow
+import tableformat
+import itertools
+import report
 import csv
+import pdb
 
 def select_columns(rows, indices):
     for row in rows:
-        yield [row[index] for index in indices]
+        yield (row[index] for index in indices)
 
 def convert_types(rows, types):
     for row in rows:
-        yield [func(val) for func,val in zip(types,row)]
+        yield (func(val) for func,val in zip(types,row))
 
 def make_dicts(rows, headers):
     for row in rows:
@@ -30,22 +34,20 @@ def parse_stock_data(lines):
     return rows
 
 def ticker(portfile, logfile, fmt):
-    import tableformat
-
+    
     portfolio = report.read_portfolio(portfile)
-    rows = parse_stock_data(logfile)
+    rows = parse_stock_data(follow(logfile))
+    rows = filter_symbols(rows, portfolio)
     formatter = tableformat.create_formatter(fmt)
-
+    formatter.headings(['Name','Price','Change'])
     for row in rows:
-        tableformat.print_table(portfolio)
+        print(itertools.count(row))
+        formatter.row([row['name'], f"{row['price']:0.2f}", f"{row['change']:0.2f}"] )
+    
+            
 
 
     
 
 if __name__ == '__main__':
-    import report
-    portfolio = report.read_portfolio('Data/portfolio.csv')
-    rows = parse_stock_data(follow('Data/stocklog.csv'))
-    rows = filter_symbols(rows, portfolio)
-    for row in rows:
-        print(row)
+    ticker('Data/portfolio.csv','Data/stocklog.csv','txt')
