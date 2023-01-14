@@ -39,6 +39,9 @@ def broadcast(targets):
 if __name__ =='__main__':
 
     # coroutine example
-    follow('Data/stocklog.csv',printer())
+    #follow('Data/stocklog.csv',printer())
     # An example of broadcasting a data stream onto multiple coroutine targets.
+
+    #follow('Data/stocklog.csv',broadcast([printer(),printer()]))
+    p = printer()
     follow('Data/stocklog.csv',broadcast([printer(),printer()]))
