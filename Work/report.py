@@ -13,15 +13,13 @@ from portfolio import Portfolio
 import tableformat
 
 
-def read_portfolio(filename: str) -> list:
+def read_portfolio(filename: str, **opts) -> list:
     'Reads a portfolio file and returns total amount paid as a float.'
     with open(filename, 'rt') as lines:
-        portdicts = fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float])
-    
-    portfolio = [Stock(s['name'], s['shares'], s['price']) for s in portdicts]
-    return Portfolio(portfolio)
+        portdicts = fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float],**opts)
 
-        
+    portfolio = [Stock(**stock) for stock in portdicts]
+    return Portfolio(portfolio)
     
 
 def read_prices(filename: str) -> dict:

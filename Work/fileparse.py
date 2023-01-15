@@ -36,6 +36,7 @@ def parse_csv(lines, select:list=None,types:list=None, has_headers:bool=True, de
                 if not silence_errors:
                     print(f"Row {rowno}: Couldn't covert {row}")
                     print(f"Row {rowno}: {err}")
+                continue
         if headers:
             record = dict(zip(headers,row))
         else:
