@@ -2,8 +2,9 @@
 # pcost.py
 # Exercise 1.27
 import sys
-import report
-import pdb
+
+from . import report
+
 
 def portfolio_cost(filename: str) -> float:
     'Reads a portfolio file and returns total amount paid as a float.'

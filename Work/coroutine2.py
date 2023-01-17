@@ -26,6 +26,18 @@ def printer():
         pass
 
 @coroutine
+def filter(pattern,target):
+    try:
+        while True:
+            line = (yield)
+            if pattern in line:
+                target.send(line)
+            continue
+    except GeneratorExit:
+        pass
+
+
+@coroutine
 def broadcast(targets):
     try:
         while True:
@@ -36,6 +48,7 @@ def broadcast(targets):
         pass
             
 if __name__ == '__main__':
-    follow('Data/stocklog.csv', broadcast([printer(),printer()]))
+    
+    follow('Data/stocklog.csv', broadcast([filter('IBM',printer()),filter('XOM',printer())]))
 
 

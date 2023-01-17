@@ -1,5 +1,6 @@
-import stock
+
 import unittest
+from . import stock
 
 class TestStock(unittest.TestCase):
 

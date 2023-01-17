@@ -5,12 +5,12 @@
 
 import csv
 import sys
-import pdb
-import fileparse
+
 from pprint import pprint 
-from stock import Stock
-from portfolio import Portfolio
-import tableformat
+
+from . import tableformat
+from . import fileparse
+from .portfolio import Portfolio
 
 
 def read_portfolio(filename: str, **opts) -> list:
@@ -93,8 +93,8 @@ def main(argv):
         prices_filename = argv[2]
         format = argv[3]
     else:
-        portfolio_filename = 'Data/portfolio.csv'
-        prices_filename = 'Data/prices.csv'
+        portfolio_filename = 'portfolio.csv'
+        prices_filename = 'prices.csv'
         format = 'txt'
     
     portfolio_report(portfolio_filename, prices_filename, format)

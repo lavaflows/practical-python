@@ -1,11 +1,11 @@
 #ticker.py
 
-from follow import follow
-import tableformat
 import itertools
-import report
 import csv
-import pdb
+
+from . import follow
+from . import tableformat
+from . import report
 
 def select_columns(rows, indices):
     for row in rows:

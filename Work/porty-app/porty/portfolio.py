@@ -1,6 +1,7 @@
 # portfolio.py
-import fileparse
-import stock
+from . import fileparse
+from . import stock
+
 class Portfolio:
 
     def __init__(self):
@@ -30,9 +31,8 @@ class Portfolio:
                                         select=['name','shares','price'],
                                         types=[str,int,float],
                                         **opts)
-        for stock in portdicts:
-            self.append(stock.Stock(**stock))
-        
+        for d in portdicts:
+            self.append(stock.Stock(**d))        
         return self
 
     @property
