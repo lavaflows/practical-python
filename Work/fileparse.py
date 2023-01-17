@@ -1,8 +1,10 @@
 # fileparse.py
 import csv
 import io
-import pdb
 from pprint import pprint
+
+import logging
+log = logging.getLogger(__name__)
 
 def parse_csv(lines, select:list=None,types:list=None, has_headers:bool=True, delimiter=',',silence_errors:bool=False):
     '''
@@ -34,8 +36,8 @@ def parse_csv(lines, select:list=None,types:list=None, has_headers:bool=True, de
                 row = [func(val) for func,val in zip(types,row)]
             except ValueError as err:
                 if not silence_errors:
-                    print(f"Row {rowno}: Couldn't covert {row}")
-                    print(f"Row {rowno}: {err}")
+                    log.warning("Row %d: Couldn't convert %s", rowno,row)
+                    log.debug("Row %d: %s",rowno, err)
                 continue
         if headers:
             record = dict(zip(headers,row))

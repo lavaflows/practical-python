@@ -16,10 +16,7 @@ import tableformat
 def read_portfolio(filename: str, **opts) -> list:
     'Reads a portfolio file and returns total amount paid as a float.'
     with open(filename, 'rt') as lines:
-        portdicts = fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float],**opts)
-
-    portfolio = [Stock(**stock) for stock in portdicts]
-    return Portfolio(portfolio)
+        return Portfolio.from_csv(lines,**opts)
     
 
 def read_prices(filename: str) -> dict:
@@ -104,7 +101,13 @@ def main(argv):
 
         
 
-if __name__ == '__main__':    
+if __name__ == '__main__':  
+    import logging
+    logging.basicConfig(
+        filename = 'app.log',            # Name of the log file (omit to use stderr)
+        filemode = 'w',                  # File mode (use 'a' to append)
+        level    = logging.WARNING,      # Logging level (DEBUG, INFO, WARNING, ERROR, or CRITICAL)
+    )  
     main(sys.argv)
 
    

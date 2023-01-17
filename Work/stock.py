@@ -20,10 +20,10 @@ class Stock:
         return self.shares * self.price
     def sell(self, num_shares):
         '''Sell shares'''
-        if isinstance(num_shares, int):
-            self.shares -= num_shares
-        else:
-            raise ValueError('num_shares should be an integer.')
+        if not isinstance(num_shares, int):
+            raise ValueError('num_shares should be an integer.') 
+        self.shares -= num_shares
+            
     
         
     
