@@ -1,7 +1,8 @@
 import os
 import time
-import report
 import csv
+import sys
+
 def follow(filename):
 
     f = open(filename, 'r')
@@ -14,9 +15,10 @@ def follow(filename):
             continue
         yield line
 
-if __name__ == '__main__':
-    portfolio = report.read_portfolio('Data/portfolio.csv')
-    for data in follow('Data/stocklog.csv'):
+def main(argv):
+    from porty.report import read_portfolio
+    portfolio = read_portfolio('portfolio.csv')
+    for data in follow('stocklog.csv'):
         row = data.split(',')
         name = row[0].strip('"')
         price = float(row[1])
@@ -24,4 +26,7 @@ if __name__ == '__main__':
         
         if name in portfolio:
             print(f'{name:>10s} {price:>10.2f} {change:>10.2f}')
+
+if __name__ == '__main__':
+    main(sys.argv)
         
