@@ -5,6 +5,7 @@
 import csv
 import sys
 from typing import List
+from collections import Counter
 
 def read_portfolio(filename:str):
     '''Read a portfolio'''
@@ -16,6 +17,8 @@ def read_portfolio(filename:str):
         for row in rows:
             holding = dict(zip(header,row))
             try:
+                holding['shares'] = int(holding['shares'])
+                holding['price'] = float(holding['price'])
                 portfolio.append(holding)
             except ValueError:
                 print(f'Error handling: {row}')
@@ -36,7 +39,7 @@ def read_prices(filename:str)->dict:
 def make_report(portfolio,prices)->List[tuple]:
     report = []
     for holding in portfolio:
-        change = float(prices[holding['name']]) - float(holding['price'])
+        change = prices[holding['name']] - holding['price']
         data = (holding['name'],int(holding['shares']),float(prices[holding['name']]), change)
         report.append(data)
     return report
@@ -70,10 +73,14 @@ if __name__ == '__main__':
     
     total_cost = 0.0
     curr_price = 0.0
-    for s in portfolio:
-        total_cost += int(s['shares'])*float(s['price'])
-        curr_price += float(prices[s['name']])*int(s['shares'])
+    total_cost = sum([s['shares']*s['price'] for s in portfolio])
+    curr_price = sum(s['shares']*prices[s['name']] for s in portfolio)
     print(f'Total Cost: {total_cost}\nCurrent Price: {curr_price:0.2f}\nGain/Loss: {curr_price-total_cost:0.2f}')
+
+    holdings = Counter()
+    for s in portfolio:
+        holdings[s['name']] += s['shares']
+
 
 
 
