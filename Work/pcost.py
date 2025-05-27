@@ -5,22 +5,31 @@ import csv
 import sys
 
 def portfolio_cost(filename):
-    with open(filename, 'rt') as f:
-        total_cost = 0
-        rows = csv.reader(f)
-        header = next(rows)
+    '''
+    Calculate cost of a portfolio.
 
-        for row,line in enumerate(rows):   
-            record = dict(zip(header,line))    
+    Args:
+        filename(str): The name of the file.
+    
+    Returns:
+        total_cost(float): The total cost of the portfolio.
+
+    '''
+    with open(filename, 'rt') as file:
+        total_cost = 0.0
+        data = csv.reader(file)
+        header = next(data)
+    
+        for row_no, line in enumerate(data):
+            record = dict(zip(header,line))
             try:
-
                 shares = int(record['shares'])
                 price = float(record['price'])
-                total_cost+= shares * price
-            except ValueError:
-                print(f'Row {row}: Error parsing {line}')
-            
+                total_cost += shares*price
+            except ValueError as msg:
+                print(f'{row_no}: {line} couldnt load')
         return total_cost
+    
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:

@@ -45,20 +45,7 @@ def make_report(portfolio,prices)->List[tuple]:
     return report
     
 
-
-
-
-if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        filename = sys.argv[1]
-    else:
-        filename = 'Data/portfolio.csv'
-        pricename = 'Data/prices.csv'
-    
-    portfolio = read_portfolio(filename)
-    prices = read_prices(pricename)
-    report = make_report(portfolio,prices)
-
+def print_report(report:List[dict], portfolio:List[dict], prices:List[dict]):
     once = True    
     for name,shares,price,change in report:
         if once:
@@ -67,9 +54,7 @@ if __name__ == '__main__':
             print(f'{"":->10s} {"":->10s} {"":->10s} {"":->10s}')
             once = False
 
-
         print(f'{name:>10s} {shares:>10d} {price:>10.2f} {change:>10.2f}')
-        
     
     total_cost = 0.0
     curr_price = 0.0
@@ -77,10 +62,22 @@ if __name__ == '__main__':
     curr_price = sum(s['shares']*prices[s['name']] for s in portfolio)
     print(f'Total Cost: {total_cost}\nCurrent Price: {curr_price:0.2f}\nGain/Loss: {curr_price-total_cost:0.2f}')
 
-    holdings = Counter()
-    for s in portfolio:
-        holdings[s['name']] += s['shares']
+def portfolio_report(filename, pricename):
+    '''Runs portfolio report'''
 
+    portfolio = read_portfolio(filename)
+    prices = read_prices(pricename)
+    report = make_report(portfolio,prices)
+    print_report(report,portfolio,prices)
+
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        filename = sys.argv[1]
+    else:
+        filename = 'Data/portfolio.csv'
+    pricename = 'Data/prices.csv'
+
+    portfolio_report(filename, pricename)
 
 
 
