@@ -4,7 +4,7 @@
 import csv
 import pdb
 
-def parse_csv(filename:str, select=['name','shares'], types=None, has_headers=False, delimiter=','):
+def parse_csv(filename:str, select=None, types=None, has_headers=False, delimiter=',', silence_errors=False):
     '''
     Parse a CSV file into a list of records
     '''
@@ -19,17 +19,26 @@ def parse_csv(filename:str, select=['name','shares'], types=None, has_headers=Fa
                 headers = select
             else:
                 indices = []
-
+        elif select:
+            if not silence_errors:
+                raise RuntimeError("select arugument requirers column headers.")
+        
         records = []
-        for row in rows:
+        for row_no,row in enumerate(rows):
             if not row: # skip row if no data
                 continue
             if indices and has_headers:
                 row = [row[index] for index in indices] 
             if types:
-                row = [func(val) for func,val in zip(types,row)] 
+                try:
+                    row = [func(val) for func,val in zip(types,row)] 
+                except ValueError as e:
+                    if not silence_errors:
+                        print(f"Row {row_no}: Couldn't convert {row}")
+                        raise
 
-            record = dict(zip(headers,row)) if has_headers else row
+
+            record = dict(zip(headers,row)) if has_headers else tuple(row)
             records.append(record)
         
         return records
@@ -62,4 +71,10 @@ if __name__ == '__main__':
     print(parse_csv('Data/prices.csv',
                     types=[str,float],
                     delimiter=','))
+    print(parse_csv('Data/prices.csv',
+                    types=[str,float],
+                    select=['name','price'],
+                    delimiter=',',
+                    silence_errors=True))
     
+    print(parse_csv('Data/missing.csv', types=[str,int,float], silence_errors=True))
