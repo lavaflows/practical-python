@@ -3,45 +3,47 @@
 # Exercise 3.3
 import csv
 import pdb
+from typing import TextIO, List
 
-def parse_csv(filename:str, select=None, types=None, has_headers=True, delimiter=',', silence_errors=False):
+def parse_csv(file:TextIO, select=None, types=None, has_headers=True, delimiter=',', silence_errors=False):
     '''
-    Parse a CSV file into a list of records
+    Parse iterable into records
     '''
+    
     if select and not has_headers:
         raise RuntimeError('select requires column headers')
     
-    with open(filename, 'rt') as f:
-        indices = []
-        rows = csv.reader(f, delimiter=delimiter)
-        headers = next(rows) if has_headers else []
-        # Read the file headers
-                    
-        if select:
-            indices = [headers.index(colname) for colname in select]
-            headers = select
+
+    indices = []
+    rows = csv.reader(file, delimiter=delimiter)
+    headers = next(rows) if has_headers else []
+    # Read the file headers
                 
-        
-        records = []
-        for row_no,row in enumerate(rows):
-            if not row: # skip row if no data
+    if select:
+        indices = [headers.index(colname) for colname in select]
+        headers = select
+            
+    
+    records = []
+    for row_no,row in enumerate(rows):
+        if not row: # skip row if no data
+            continue
+        if select:
+            row = [row[index] for index in indices] 
+        if types:
+            try:
+                row = [func(val) for func,val in zip(types,row)] 
+            except ValueError as e:
+                if not silence_errors:
+                    print(f"Row {row_no}: Couldn't convert {row}")
+                    print(f"Reason: {e}")
                 continue
-            if select:
-                row = [row[index] for index in indices] 
-            if types:
-                try:
-                    row = [func(val) for func,val in zip(types,row)] 
-                except ValueError as e:
-                    if not silence_errors:
-                        print(f"Row {row_no}: Couldn't convert {row}")
-                        print(f"Reason: {e}")
-                    continue
 
 
-            record = dict(zip(headers,row)) if headers else tuple(row)
-            records.append(record)
+        record = dict(zip(headers,row)) if headers else tuple(row)
+        records.append(record)
 
-        return records
+    return records
     
 if __name__ == '__main__':
     print(parse_csv('Data/portfoliodate.csv',

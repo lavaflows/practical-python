@@ -1,8 +1,9 @@
-# pcost.py
+#!/usr/bin/env python3
 #
 # Exercise 1.27
 import csv
 import sys
+import report
 
 def portfolio_cost(filename):
     '''
@@ -15,27 +16,19 @@ def portfolio_cost(filename):
         total_cost(float): The total cost of the portfolio.
 
     '''
-    with open(filename, 'rt') as file:
-        total_cost = 0.0
-        data = csv.reader(file)
-        header = next(data)
+    result = report.read_portfolio(filename)
     
-        for row_no, line in enumerate(data):
-            record = dict(zip(header,line))
-            try:
-                shares = int(record['shares'])
-                price = float(record['price'])
-                total_cost += shares*price
-            except ValueError as msg:
-                print(f'{row_no}: {line} couldnt load')
-        return total_cost
-    
+    return sum(row['shares']*row['price'] for row in result)
 
-if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        filename = sys.argv[1]
-    else:
-        filename = 'Data/missing.csv'
-    
+def main(argv):
+    if len(argv) != 2:
+        raise SystemExit(f'Usage: {argv[0]} ' 'portfile')
+        
+    filename = sys.argv[1]    
     cost = portfolio_cost(filename)
     print(f'Total cost: {cost}')
+
+
+if __name__ == '__main__':
+    main(sys.argv)
+    

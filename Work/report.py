@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # report.py
 #
 # Exercise 2.4
@@ -7,25 +8,32 @@ import sys
 from fileparse import parse_csv
 from typing import List
 from collections import Counter
+from stock import Stock
 
-def read_portfolio(filename:str):
-    '''Read a portfolio'''
-    return parse_csv(filename=filename,
-                     select=['name','shares','price'],
-                     types=[str,int,float],
-                     has_headers=True)
+def read_portfolio(filename:str)->List[Stock]:
+    '''
+    Read a stock portfolio file into a list of dictionaries with keys
+    name, shares, price.
+    '''
+    with open(filename, 'rt') as lines:
+        portdicts = parse_csv(lines, select=['name','shares','price'], types=[str,int,float], has_headers=True)
+
+    portfolio = [Stock(s['name'],s['shares'],s['price']) for s in portdicts]
+    return portfolio
             
 def read_prices(filename:str)->List[tuple]:
-    '''Read prices'''
-    return parse_csv(filename=filename,
-                      has_headers=False)
+    '''
+    Read prices file into a dictionary mapping
+    '''
+    with open(filename, 'rt') as lines:
+        return parse_csv(lines, has_headers=False)
 
 
-def make_report(portfolio:List[dict],prices:dict)->List[tuple]:
+def make_report(portfolio:List[Stock],prices:dict)->List[tuple]:
     report = []
     for holding in portfolio:
-        change = prices[holding['name']] - holding['price']
-        data = (holding['name'],int(holding['shares']),float(prices[holding['name']]), change)
+        change = prices[holding.name] - holding.price
+        data = (holding.name,int(holding.shares),float(prices[holding.name]), change)
         report.append(data)
     return report
     
@@ -43,8 +51,9 @@ def print_report(report:List[dict], portfolio:List[dict], prices:dict):
     
     total_cost = 0.0
     curr_price = 0.0
-    total_cost = sum([s['shares']*s['price'] for s in portfolio])
-    curr_price = sum(s['shares']*prices[s['name']] for s in portfolio)
+    total_cost = sum([s.cost() for s in portfolio])
+    curr_price = sum(s.shares*prices[s.name] for s in portfolio)
+    print(f'\n{"":->18}{"Summary":-<25}\n')
     print(f'Total Cost: {total_cost}\nCurrent Price: {curr_price:0.2f}\nGain/Loss: {curr_price-total_cost:0.2f}')
 
 def portfolio_report(filename, pricename):
@@ -57,14 +66,19 @@ def portfolio_report(filename, pricename):
     report = make_report(portfolio,prices)
     print_report(report,portfolio,prices)
 
-if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        filename = sys.argv[1]
-    else:
-        filename = 'Data/portfolio.csv'
-    pricename = 'Data/prices.csv'
+def main(argv):
+    if len(argv) !=3:
+        raise SystemExit(f'Usage: {argv[0]} ' 'portfile pricefile')
+    portfile = argv[1]
+    pricefile = argv[2]
+    
+    portfolio_report(portfile, pricefile)
 
-    portfolio_report(filename, pricename)
+if __name__ == '__main__':
+    main(sys.argv)
+    
+
+    
 
 
 
