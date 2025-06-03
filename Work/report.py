@@ -4,39 +4,24 @@
 
 import csv
 import sys
+from fileparse import parse_csv
 from typing import List
 from collections import Counter
 
 def read_portfolio(filename:str):
     '''Read a portfolio'''
-    with open(filename, 'rt') as f:
-        rows = csv.reader(f)
-        header = next(rows)
-
-        portfolio = []
-        for row in rows:
-            holding = dict(zip(header,row))
-            try:
-                holding['shares'] = int(holding['shares'])
-                holding['price'] = float(holding['price'])
-                portfolio.append(holding)
-            except ValueError:
-                print(f'Error handling: {row}')
-        return portfolio
+    return parse_csv(filename=filename,
+                     select=['name','shares','price'],
+                     types=[str,int,float],
+                     has_headers=True)
             
-def read_prices(filename:str)->dict:
-    prices = {}
-    with open(filename,'rt') as f:
-        rows = csv.reader(f)
-        for line in rows:
-            try:
-                prices[line[0]] = float(line[1])
-            except IndexError:
-                print(f'Error encountered: {line}')
-    return prices
+def read_prices(filename:str)->List[tuple]:
+    '''Read prices'''
+    return parse_csv(filename=filename,
+                      has_headers=False)
 
 
-def make_report(portfolio,prices)->List[tuple]:
+def make_report(portfolio:List[dict],prices:dict)->List[tuple]:
     report = []
     for holding in portfolio:
         change = prices[holding['name']] - holding['price']
@@ -45,7 +30,7 @@ def make_report(portfolio,prices)->List[tuple]:
     return report
     
 
-def print_report(report:List[dict], portfolio:List[dict], prices:List[dict]):
+def print_report(report:List[dict], portfolio:List[dict], prices:dict):
     once = True    
     for name,shares,price,change in report:
         if once:
@@ -67,6 +52,8 @@ def portfolio_report(filename, pricename):
 
     portfolio = read_portfolio(filename)
     prices = read_prices(pricename)
+    # Change prices from a tuple to a key:val dictionary.
+    prices = {key:float(val) for key, val in prices}
     report = make_report(portfolio,prices)
     print_report(report,portfolio,prices)
 
