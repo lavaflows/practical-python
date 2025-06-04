@@ -5,9 +5,11 @@
 
 import csv
 import sys
+import tableformat
 from fileparse import parse_csv
 from typing import List
 from collections import Counter
+
 from stock import Stock
 
 def read_portfolio(filename:str)->List[Stock]:
@@ -38,16 +40,14 @@ def make_report(portfolio:List[Stock],prices:dict)->List[tuple]:
     return report
     
 
-def print_report(report:List[dict], portfolio:List[dict], prices:dict):
-    once = True    
-    for name,shares,price,change in report:
-        if once:
-            headers = ('Name', 'Shares', 'Price', 'Change')
-            print(f'{headers[0]:>10s} {headers[1]:>10s} {headers[2]:>10s} {headers[3]:>10s}')
-            print(f'{"":->10s} {"":->10s} {"":->10s} {"":->10s}')
-            once = False
-
-        print(f'{name:>10s} {shares:>10d} {price:>10.2f} {change:>10.2f}')
+def print_report(report:List[dict], portfolio:List[dict], prices:dict, formatter:tableformat.TableFormatter):
+    '''
+    Print a nicely formatted table from a list of (name, shares, price, change) tuples.
+    '''
+    formatter.headings(['Name','Shares','Price','Change'])
+    for name, shares, price, change in report:
+        rowdata = [ name, str(shares), f'{price:0.2f}', f'{change:0.2f}' ]
+        formatter.row(rowdata)
     
     total_cost = 0.0
     curr_price = 0.0
@@ -64,7 +64,8 @@ def portfolio_report(filename, pricename):
     # Change prices from a tuple to a key:val dictionary.
     prices = {key:float(val) for key, val in prices}
     report = make_report(portfolio,prices)
-    print_report(report,portfolio,prices)
+    formatter = tableformat.CSVTableFormatter()
+    print_report(report,portfolio,prices, formatter)
 
 def main(argv):
     if len(argv) !=3:
