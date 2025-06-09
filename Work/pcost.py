@@ -18,7 +18,7 @@ def portfolio_cost(filename):
     '''
     result = report.read_portfolio(filename)
     
-    return sum(row['shares']*row['price'] for row in result)
+    return sum(row.shares*row.price for row in result)
 
 def main(argv):
     if len(argv) != 2:

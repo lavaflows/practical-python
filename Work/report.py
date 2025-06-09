@@ -56,7 +56,7 @@ def print_report(report:List[dict], portfolio:List[dict], prices:dict, formatter
     print(f'\n{"":->18}{"Summary":-<25}\n')
     print(f'Total Cost: {total_cost}\nCurrent Price: {curr_price:0.2f}\nGain/Loss: {curr_price-total_cost:0.2f}')
 
-def portfolio_report(filename, pricename):
+def portfolio_report(filename, pricename, fmt='txt'):
     '''Runs portfolio report'''
 
     portfolio = read_portfolio(filename)
@@ -64,16 +64,17 @@ def portfolio_report(filename, pricename):
     # Change prices from a tuple to a key:val dictionary.
     prices = {key:float(val) for key, val in prices}
     report = make_report(portfolio,prices)
-    formatter = tableformat.CSVTableFormatter()
+    formatter = tableformat.create_formatter(fmt)
     print_report(report,portfolio,prices, formatter)
 
 def main(argv):
-    if len(argv) !=3:
+    if len(argv) !=4:
         raise SystemExit(f'Usage: {argv[0]} ' 'portfile pricefile')
     portfile = argv[1]
     pricefile = argv[2]
+    fmt = argv[3]
     
-    portfolio_report(portfile, pricefile)
+    portfolio_report(portfile, pricefile, fmt)
 
 if __name__ == '__main__':
     main(sys.argv)
