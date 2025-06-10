@@ -9,6 +9,7 @@ import tableformat
 from fileparse import parse_csv
 from typing import List
 from collections import Counter
+from portfolio import Portfolio
 
 from stock import Stock
 
@@ -18,10 +19,11 @@ def read_portfolio(filename:str)->List[Stock]:
     name, shares, price.
     '''
     with open(filename, 'rt') as lines:
-        portdicts = parse_csv(lines, select=['name','shares','price'], types=[str,int,float], has_headers=True)
+        portdicts = parse_csv(lines, select=['name','shares','price'],
+                              types=[str,int,float], has_headers=True)
 
     portfolio = [Stock(s['name'],s['shares'],s['price']) for s in portdicts]
-    return portfolio
+    return Portfolio(portfolio)
             
 def read_prices(filename:str)->List[tuple]:
     '''
@@ -31,7 +33,7 @@ def read_prices(filename:str)->List[tuple]:
         return parse_csv(lines, has_headers=False)
 
 
-def make_report(portfolio:List[Stock],prices:dict)->List[tuple]:
+def make_report(portfolio:List[Stock]=None,prices:dict=None)->List[tuple]:
     report = []
     for holding in portfolio:
         change = prices[holding.name] - holding.price
@@ -40,7 +42,7 @@ def make_report(portfolio:List[Stock],prices:dict)->List[tuple]:
     return report
     
 
-def print_report(report:List[dict], portfolio:List[dict], prices:dict, formatter:tableformat.TableFormatter):
+def print_report(report:List[dict]=None, portfolio:List[dict]=None, prices:dict=None, formatter:tableformat.TableFormatter=None):
     '''
     Print a nicely formatted table from a list of (name, shares, price, change) tuples.
     '''
@@ -51,7 +53,7 @@ def print_report(report:List[dict], portfolio:List[dict], prices:dict, formatter
     
     total_cost = 0.0
     curr_price = 0.0
-    total_cost = sum([s.cost() for s in portfolio])
+    total_cost = sum([s.cost for s in portfolio])
     curr_price = sum(s.shares*prices[s.name] for s in portfolio)
     print(f'\n{"":->18}{"Summary":-<25}\n')
     print(f'Total Cost: {total_cost}\nCurrent Price: {curr_price:0.2f}\nGain/Loss: {curr_price-total_cost:0.2f}')
