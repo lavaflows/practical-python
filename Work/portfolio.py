@@ -7,7 +7,7 @@ class Portfolio:
     def __iter__(self):
         return self._holdings.__iter__()
     def __contains__(self, item):
-        return item in [stock.name for stock in self._holdings]
+        return any([item == stock.name for stock in self._holdings])
 
 
     @property
