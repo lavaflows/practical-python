@@ -13,16 +13,16 @@ from portfolio import Portfolio
 
 from stock import Stock
 
-def read_portfolio(filename:str)->List[Stock]:
+def read_portfolio(filename:str, **opts)->List[Stock]:
     '''
     Read a stock portfolio file into a list of dictionaries with keys
     name, shares, price.
     '''
     with open(filename, 'rt') as lines:
         portdicts = parse_csv(lines, select=['name','shares','price'],
-                              types=[str,int,float], has_headers=True)
+                              types=[str,int,float], has_headers=True,**opts)
 
-    portfolio = [Stock(s['name'],s['shares'],s['price']) for s in portdicts]
+    portfolio = [Stock(**d) for d in portdicts]
     return Portfolio(portfolio)
             
 def read_prices(filename:str)->List[tuple]:

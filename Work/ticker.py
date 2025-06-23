@@ -23,9 +23,9 @@ def make_dict(rows, headers):
 		yield {name:val for name,val in zip(headers,row)}
 
 def filter_names(rows, names):
-	for row in rows:
-		if row['name'] in names:
-			yield row
+
+	rows = (row for row in rows if row['name'] in names)
+	return rows
 
 def ticker(portfile:str, logfile:str, fmt:str):
 	import report
