@@ -1,7 +1,11 @@
 #!/usr/env/python3
+from typedproperty import String, Integer, Float
 
 class Stock:
-    __slots__ = ('name','_shares','price')
+    name = String('name')
+    shares = Integer('shares')
+    price = Float('price')
+
     def __init__(self, name, shares, price):
         self.name = name
         self.shares = shares
@@ -11,14 +15,6 @@ class Stock:
     @property
     def cost(self):
         return self.shares * self.price
-    @property
-    def shares(self):
-        return self._shares
-    @shares.setter
-    def shares(self, value):
-        if not isinstance(value, int):
-            raise TypeError(f'Expected int: {value}')
-        self._shares = value
 
     def sell(self, shares:int):
         self.shares = self.shares - shares if shares <= self.shares else 0
