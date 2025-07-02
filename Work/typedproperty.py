@@ -13,4 +13,7 @@ def typedproperty(name, expected_type):
             raise TypeError(f'Expected Type: {expected_type}')
         setattr(self, private_name, value)
     return prop
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2956432387ba857e27ef6bd6cf04b2b52bbcb604
