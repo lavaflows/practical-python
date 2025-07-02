@@ -19,11 +19,9 @@ def read_portfolio(filename:str, **opts)->List[Stock]:
     name, shares, price.
     '''
     with open(filename, 'rt') as lines:
-        portdicts = parse_csv(lines, select=['name','shares','price'],
-                              types=[str,int,float], has_headers=True,**opts)
+        port = Portfolio.from_csv(lines)
 
-    portfolio = [Stock(**d) for d in portdicts]
-    return Portfolio(portfolio)
+    return port
             
 def read_prices(filename:str)->List[tuple]:
     '''
