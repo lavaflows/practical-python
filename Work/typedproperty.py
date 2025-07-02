@@ -14,4 +14,3 @@ def typedproperty(name, expected_type):
             raise TypeError(f'Expected type: {expected_type}')
         setattr(self, private_name, value)
     return prop
-    
