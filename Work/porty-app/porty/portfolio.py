@@ -10,6 +10,8 @@ class Portfolio:
         return self._holdings.__iter__()
     def __contains__(self, item):
         return any([item == stock.name for stock in self._holdings])
+    def __getitem__(self,index):
+        return self._holdings[index]
     
     def append(self, holding):
         if not isinstance(holding, stock.Stock):
